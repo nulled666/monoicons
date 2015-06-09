@@ -2,9 +2,12 @@
 
 A Set of SVG Font Icons for Web.
 
-I made this set of 14px perfect icons and the export script, because the icons in Awesome icons font is not very consistent in style, and hard to edit.
+I made this set of pixel perfect icons (on 14px) and the export script, because the icons in Awesome icons font is not very consistent in style, and hard to edit.
 
 <a href="http://nulled666.github.io/monoicons/monoicons.htm" target="_blank">Have a live preview here</a>
+
+Simple include the monoicons.css & eot/ttf/woff/svg font files in your project.
+Then refer the monoicons.css in HTML and use .mi-*** class to use the icons.
 
 ###How to make your own font###
 * Edit the Source File monoicons-14x14.fw.png  (Adobe Fireworks CS6 Format).
