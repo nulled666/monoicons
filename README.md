@@ -1,7 +1,8 @@
 ## Monoicons ##
 
-A Set of SVG Font Icons for Web
-I made this set of icons and the export script, because the icons in Awesome icons font is not very consistent in style, and hard to edit.
+A Set of SVG Font Icons for Web.
+
+I made this set of 14px perfect icons and the export script, because the icons in Awesome icons font is not very consistent in style, and hard to edit.
 
 <a href="http://nulled666.github.io/monoicons/monoicons.htm" target="_blank">Have a live preview here</a>
 
