@@ -8,7 +8,7 @@
 
 
 var SCRIPT_NAME = "SVG Font Exporter"
-var VERSION = "0.2.0";
+var VERSION = "0.2.1";
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -16,6 +16,7 @@ var VERSION = "0.2.0";
 // CONFIG
 
 var FONT_NAME = 'monoicons';
+var CLASS_PREFIX = 'mi';
 var AUTHOR_NAME = 'SiC';
 var AUTHOR_EMAIL = 'nulled666@gmail.com';
 
@@ -38,7 +39,6 @@ var GENERATED_BY =
 //////////////////////////////////////////////////////////////////////////////////////
 
 // EXTRA PARAMS
-var CLASS_PREFIX = "icon";
 var INDENT = "\t";
 var NEWLINE = "\n";
 
