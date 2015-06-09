@@ -395,6 +395,7 @@ function ExportSVG() {
 	<div class="controls">\
 		<div class="switch">\
 			<a onclick="color_change(\'#333\')">B</a>\
+			<a onclick="color_change(\'#FFF\')">W</a>\
 			<a onclick="color_change(\'#d93600\')">R</a>\
 			<a onclick="color_change(\'#85b200\')">G</a>\
 			<a onclick="color_change(\'#006dd9\')">B</a>\
@@ -403,7 +404,8 @@ function ExportSVG() {
 		</div>\
 		<br/>\
 		<div class="switch">\
-			<a onclick="bg_change(\'#333\')">W</a>\
+			<a onclick="bg_change(\'#333\')">B</a>\
+			<a onclick="bg_change(\'#FFF\')">W</a>\
 			<a onclick="bg_change(\'#d93600\')">R</a>\
 			<a onclick="bg_change(\'#85b200\')">G</a>\
 			<a onclick="bg_change(\'#006dd9\')">B</a>\
