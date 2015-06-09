@@ -233,12 +233,14 @@ function ExportSVG() {
 		}\
 		.title h1 {\
 			display: inline-block;\
+			vertical-align: middle;\
 			margin: 10px 0;\
 			font-weight: normal;\
 			font-size: 48px;\
 		}\
 		.info {\
 			display: inline-block;\
+			vertical-align: middle;\
 			margin: 0 20px;\
 			padding: 10px 20px;\
 			line-height: 150%;\
@@ -250,11 +252,13 @@ function ExportSVG() {
 		}\
 		.controls {\
 			display: inline-block;\
+			vertical-align: middle;\
 		}\
 		.switch {\
 			display: inline-block;\
-			margin: 4px 0;\
+			margin: 4px 0 0 0;\
 			font-size: 0;\
+			font-family: Consolas, Courier New;\
 		}\
 		.switch a {\
 			display: inline-block;\
@@ -270,6 +274,28 @@ function ExportSVG() {
 		}\
 		.switch .active {\
 			background: #fff;\
+		}\
+		.switch .invert,\
+		.switch .invert:hover{\
+			position: relative;\
+			top: 12px;\
+			background: none;\
+		}\
+		.switch .invert i{\
+			color:#7FB2FE;\
+			font-size: 14px;\
+		}\
+		.switch .invert:hover i{\
+			color: #fff;\
+		}\
+		.switch input{\
+			margin: 0 1px;\
+			padding: 0 8px;\
+			width: 60px;\
+			color: #98C3FE;\
+			background: none;\
+			border: none;\
+			border-bottom: 1px solid #66A5FE;\
 		}\
 		table {\
 			margin: 140px 0 0 20px;\
@@ -293,25 +319,24 @@ function ExportSVG() {
 		}\
 	</style>\n\
 	<script>\
-	var inverted = false;\
 	var last_size = 14;\
 	var last_color = "#333";\
 	var bg_color = "#fff";\
+	function id(id){\
+		return document.getElementById(id);\
+	}\
 	function invert(){\
-		inverted = !inverted;\
+		var t = last_color;\
+		last_color = bg_color;\
+		bg_color = t;\
+		id("color_input").value = last_color;\
+		id("bg_input").value = bg_color;\
 		set();\
 	}\
-	function set(size, color){\
-		size = size || last_size;\
-		color = color || last_color;\
-		last_color = color;\
-		last_size = size;\
+	function set(){\
+		var color = last_color;\
 		var bg = bg_color;\
-		if(inverted){\
-			var t = color;\
-			color = bg;\
-			bg = t;\
-		}\
+		var size = last_size;\
 		var sheet = document.styleSheets[1];\
 		var rules = sheet.cssRules? sheet.cssRules: sheet.rules;\
 		for (i=0; i<rules.length; i++){\
@@ -323,6 +348,39 @@ function ExportSVG() {
 				break;\
 			}\
 		}\
+	}\
+	function color_change(str){\
+		var o = id("color_input");\
+		if(str){ o.value = str; }\
+		var v = o.value;\
+		last_color = v;\
+		set();\
+	}\
+	function bg_change(str){\
+		var o = id("bg_input");\
+		if(str){ o.value = str; }\
+		var v = o.value;\
+		bg_color = v;\
+		set();\
+	}\
+	function set_size(mode){\
+		var o = id("font_size");\
+		var v = parseInt(o.value,10);\
+		if(isNaN(v)){\
+			o.value = 14;\
+			return;\
+		}\
+		if(mode!=undefined){\
+			if(mode){\
+				v += 14;\
+			}else{\
+				v -=14;\
+				if(v<=0) v=14;\
+			}\
+			o.value = v;\
+		}\
+		last_size = v;\
+		set();\
 	}\
 	</script>\n\
 </head>\n\
@@ -336,19 +394,26 @@ function ExportSVG() {
 	</div>\
 	<div class="controls">\
 		<div class="switch">\
-			<a onclick="set(false,\'#333\')">black</a>\
-			<a onclick="set(false,\'#d93600\')">red</a>\
-			<a onclick="set(false,\'#85b200\')">green</a>\
-			<a onclick="set(false,\'#006dd9\')">blue</a>\
-		</div>\
-		<div class="switch">\
-			<a onclick="invert()">invert</a>\
+			<a onclick="color_change(\'#333\')">B</a>\
+			<a onclick="color_change(\'#d93600\')">R</a>\
+			<a onclick="color_change(\'#85b200\')">G</a>\
+			<a onclick="color_change(\'#006dd9\')">B</a>\
+			<input id="color_input" onchange="color_change()" value="#333"/>\
+			<a onclick="invert()" class="invert"><i class="icon-swap-v"></i></a>\
 		</div>\
 		<br/>\
 		<div class="switch">\
-			<a onclick="set(14)">14px</a>\
-			<a onclick="set(28)">28px</a>\
-			<a onclick="set(42)">42px</a>\
+			<a onclick="bg_change(\'#333\')">W</a>\
+			<a onclick="bg_change(\'#d93600\')">R</a>\
+			<a onclick="bg_change(\'#85b200\')">G</a>\
+			<a onclick="bg_change(\'#006dd9\')">B</a>\
+			<input id="bg_input" onchange="bg_change()" value="#fff"/>\
+		</div>\
+		<br/>\
+		<div class="switch">\
+			<a onclick="set_size(true)">+</a>\
+			<a onclick="set_size(false)">-</a>\
+			<input id="font_size" onchange="set_size()" value="14"/>\
 		</div>\
 	</div>\
 </div>\n\
