@@ -3,7 +3,7 @@
 A Set of SVG Font Icons for Web
 I made this set of icons and the export script, because the icons in Awesome icons font is not very consistent in style, and hard to edit.
 
-[Have a live preview here](http://nulled666.github.io/monoicons/monoicons.htm)
+<a href="http://nulled666.github.io/monoicons/monoicons.htm" target="_blank">Have a live preview her</a>
 
 ###How to make your own font###
 * Edit the Source File monoicons-14x14.fw.png  (Adobe Fireworks CS6 Format).
