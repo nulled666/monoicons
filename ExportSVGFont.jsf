@@ -46,8 +46,9 @@ var NUMBER_PRECISION = 4;
 var SKIP_HIDDEN_LAYERS = false;
 var SKIP_HIDDEN_OBJECTS = true;
 
-var GLYPH_SIZE = 1200;  // the default glyph size we need to resize to
-var GLYPH_DESCENT = -240;
+var GLYPH_SIZE = 1400;  // the default glyph size we need to resize to
+var GLYPH_DESCENT_RATIO = 0.2;
+var GLYPH_DESCENT = - GLYPH_SIZE * GLYPH_DESCENT_RATIO;
 var GLYPH_ASCENT = GLYPH_SIZE + GLYPH_DESCENT;
 
 var UNICODE_CODE_START = 0xe001;
@@ -155,9 +156,9 @@ function ExportSVG() {
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\
 <svg xmlns="http://www.w3.org/2000/svg">\
 	<defs>\
-		<font id="'+ FONT_NAME +'" horiz-adv-x="' + GLYPH_SIZE + '" >\
-			<font-face units-per-em="' + GLYPH_SIZE + '" ascent="' + GLYPH_ASCENT + '" descent="' + GLYPH_DESCENT + '" />\
-			<missing-glyph horiz-adv-x="' + Math.floor(GLYPH_SIZE/2) + '" />\
+		<font id="'+ FONT_NAME +'" horiz-adv-x="' + GLYPH_SIZE + '" vert-adv-y="' + GLYPH_SIZE + '">\
+			<font-face units-per-em="' + GLYPH_SIZE + '" ascent="' + GLYPH_SIZE + '" descent="' + GLYPH_SIZE + '"/>\
+			<missing-glyph horiz-adv-x="' + GLYPH_SIZE + '" vert-adv-y="' + GLYPH_SIZE + '" />\
 			' + _svg_output + '\
 		</font>\
 	</defs>\
@@ -190,7 +191,7 @@ function ExportSVG() {
 .'+CLASS_PREFIX+'box {\n\
 	font-family: "' + FILE_NAME + '";\n\
 	font-style: normal;\n\
-	line-height: 1;\n\
+	line-height: 1em;\n\
 }\n\n\
 ' + _css_output;
 		
@@ -553,7 +554,7 @@ function ExportSVG() {
 	function renderSlice( slice ){
 
 		_zoom_ratio = GLYPH_SIZE / slice.width;
-		_slice_offset = [slice.left, slice.top];
+		_slice_offset = [slice.left, slice.top - slice.width * GLYPH_DESCENT_RATIO];
 		
 		var elems = _dom.elementsAt({
 			top: slice.top,
