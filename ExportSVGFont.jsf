@@ -8,7 +8,7 @@
 
 
 var SCRIPT_NAME = "SVG Font Exporter"
-var VERSION = "0.2.1";
+var VERSION = "0.2.5";
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -46,8 +46,9 @@ var NUMBER_PRECISION = 4;
 var SKIP_HIDDEN_LAYERS = false;
 var SKIP_HIDDEN_OBJECTS = true;
 
-var GLYPH_SIZE = 1200;  // the default glyph size we need to resize to
-var GLYPH_DESCENT = -240;
+var GLYPH_SIZE = 1400;  // the default glyph size we need to resize to
+var GLYPH_DESCENT_RATIO = 0.5;
+var GLYPH_DESCENT = - GLYPH_SIZE * GLYPH_DESCENT_RATIO;
 var GLYPH_ASCENT = GLYPH_SIZE + GLYPH_DESCENT;
 
 var UNICODE_CODE_START = 0xe001;
@@ -155,9 +156,9 @@ function ExportSVG() {
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\
 <svg xmlns="http://www.w3.org/2000/svg">\
 	<defs>\
-		<font id="'+ FONT_NAME +'" horiz-adv-x="' + GLYPH_SIZE + '" >\
-			<font-face units-per-em="' + GLYPH_SIZE + '" ascent="' + GLYPH_ASCENT + '" descent="' + GLYPH_DESCENT + '" />\
-			<missing-glyph horiz-adv-x="' + Math.floor(GLYPH_SIZE/2) + '" />\
+		<font id="'+ FONT_NAME +'" horiz-adv-x="' + GLYPH_SIZE + '" vert-adv-y="' + GLYPH_SIZE + '">\
+			<font-face units-per-em="' + GLYPH_SIZE + '" ascent="' + GLYPH_SIZE + '" descent="' + GLYPH_SIZE + '"/>\
+			<missing-glyph horiz-adv-x="' + GLYPH_SIZE + '" vert-adv-y="' + GLYPH_SIZE + '" />\
 			' + _svg_output + '\
 		</font>\
 	</defs>\
@@ -186,11 +187,13 @@ function ExportSVG() {
 	font-style: normal;\n\
 	font-weight: normal;\n\
 }\n\n\
-[class^="'+CLASS_PREFIX+'-"]:before,\n\
+[class^="'+CLASS_PREFIX+'-"],\n\
 .'+CLASS_PREFIX+'box {\n\
 	font-family: "' + FILE_NAME + '";\n\
 	font-style: normal;\n\
-	line-height: 1;\n\
+	line-height: 1em;\n\
+	display:inline-block;\n\
+	vertical-align: middle;\n\
 }\n\n\
 ' + _css_output;
 		
@@ -306,6 +309,7 @@ function ExportSVG() {
 		i {\
 			font-size: 14px;\
 			color: #333;\
+			-outline:1px dotted invert;\
 		}\
 		tr:hover {\
 			background-color: rgba(0,0,0,0.05);\
@@ -394,13 +398,19 @@ function ExportSVG() {
 	</div>\
 	<div class="controls">\
 		<div class="switch">\
+			<a onclick="set_size(true)">+</a>\
+			<a onclick="set_size(false)">-</a>\
+			<input id="font_size" onchange="set_size()" value="14"/>\
+		</div>\
+		<br/>\
+		<div class="switch">\
 			<a onclick="color_change(\'#333\')">B</a>\
 			<a onclick="color_change(\'#FFF\')">W</a>\
 			<a onclick="color_change(\'#d93600\')">R</a>\
 			<a onclick="color_change(\'#85b200\')">G</a>\
 			<a onclick="color_change(\'#006dd9\')">B</a>\
 			<input id="color_input" onchange="color_change()" value="#333"/>\
-			<a onclick="invert()" class="invert"><i class="icon-swap-v"></i></a>\
+			<a onclick="invert()" class="invert"><i class="mi-swap-v"></i></a>\
 		</div>\
 		<br/>\
 		<div class="switch">\
@@ -410,12 +420,6 @@ function ExportSVG() {
 			<a onclick="bg_change(\'#85b200\')">G</a>\
 			<a onclick="bg_change(\'#006dd9\')">B</a>\
 			<input id="bg_input" onchange="bg_change()" value="#fff"/>\
-		</div>\
-		<br/>\
-		<div class="switch">\
-			<a onclick="set_size(true)">+</a>\
-			<a onclick="set_size(false)">-</a>\
-			<input id="font_size" onchange="set_size()" value="14"/>\
 		</div>\
 	</div>\
 </div>\n\
@@ -470,46 +474,78 @@ function ExportSVG() {
 			}
 		}
 		
+		if(slices.length<1){
+			alert("ERROR: No slice for output!");
+			return;
+		}
+		
+		// clone array
+		var list = create_list(slices);
+		
 		// parse the document
-		_svg_output = parseObjects(slices);
+		_svg_output = processSlices(list);
 		
 	}
 	
 	
-	// parse out a list of objects
-	function parseObjects(objects){
+	function create_list(slices){
 		
-		var svgStr = "";
+		var list = [];
 		
-		var i = objects.length;
+		var i = slices.length;
 		while(i--){
 			
-			var elem = objects[i];
+			var elem = slices[i];
 			
-			if(elem.toString() =="[object SliceHotspot]"){
-				svgStr += renderSlice(elem);
+			// rectangle slice only
+			if(elem.toString() =="[object SliceHotspot]" && elem.shape == "rectangle"){
+				var rect = elem.pixelRect;
+				var item = {
+					top: rect.top,
+					left: rect.left,
+					right: rect.right,
+					bottom: rect.bottom,
+					width: elem.width,
+					name: elem.baseName,
+					id: elem.altText
+				};
+				list.push(item);
 			}
 		}
 		
-		return svgStr;
+		list.sort(sort_slices);
+		
+		return list;
 
 	}
-
+	
+	// sort slices in layout order
+	function sort_slices(s1, s2){
 		
-	// render slice
-	function renderSlice(elem){
-		
-		var svgStr = '';
-		
-		// rectangle slice only
-		if(elem.shape == "rectangle"){
-			svgStr += renderSliceElements(elem);
+		if(s1.top < s2.top || (s1.top == s2.top && s1.left < s2.left)){
+			return 1;
+		}else{
+			return -1;
 		}
-
+		
+	}
+	
+	
+	// parse out a list of slices
+	function processSlices(list){
+		
+		var svgStr = "";
+		
+		var i = list.length;
+		while(i--){
+			svgStr += renderSlice(list[i]);
+		}
+		
 		return svgStr;
+
 	}
 
-
+		
 	// get ordered id
 	function getId(){
 		var s = UNICODE_CODE_START.toString(16);
@@ -518,21 +554,24 @@ function ExportSVG() {
 	}
 
 	// renders all elements within a slice
-	function renderSliceElements( slice ){
-
-		var rect = slice.pixelRect;
+	function renderSlice( slice ){
 
 		_zoom_ratio = GLYPH_SIZE / slice.width;
-		_slice_offset = [rect.left, rect.top];
+		_slice_offset = [slice.left, slice.top - slice.width * GLYPH_DESCENT_RATIO];
 		
-		var elems = _dom.elementsAt(rect);
+		var elems = _dom.elementsAt({
+			top: slice.top,
+			left: slice.left,
+			right: slice.right,
+			bottom: slice.bottom
+		});
 
 		if(elems.length < 1) return "";
 		
 		var str = parsePathObjects(elems);
-		var name = slice.baseName || false;
+		var name = slice.name || false;
 		var numId = getId();
-		var id = slice.altText || '&#x'+ numId +';';
+		var id = slice.id || '&#x'+ numId +';';
 		
 		if(str != ""){
 			str = '<glyph unicode="' + id + '" '+
