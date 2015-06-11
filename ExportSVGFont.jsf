@@ -476,23 +476,49 @@ function ExportSVG() {
 		}
 		
 		// clone array
-		var list = [];
-		for(var i=0; i<slices.length; i++){
-			list.push(slices[i]);
-		}
-		list.sort(sort_slices);
+		var list = create_list(slices);
 		
 		// parse the document
-		_svg_output = parseObjects(list);
+		_svg_output = processSlices(list);
 		
+	}
+	
+	
+	function create_list(slices){
+		
+		var list = [];
+		
+		var i = slices.length;
+		while(i--){
+			
+			var elem = slices[i];
+			
+			// rectangle slice only
+			if(elem.toString() =="[object SliceHotspot]" && elem.shape == "rectangle"){
+				var rect = elem.pixelRect;
+				var item = {
+					top: rect.top,
+					left: rect.left,
+					right: rect.right,
+					bottom: rect.bottom,
+					width: elem.width,
+					name: elem.baseName,
+					id: elem.altText
+				};
+				list.push(item);
+			}
+		}
+		
+		list.sort(sort_slices);
+		
+		return list;
+
 	}
 	
 	// sort slices in layout order
 	function sort_slices(s1, s2){
-		var r1 = s1.pixelRect;
-		var r2 = s2.pixelRect;
 		
-		if(r1.top < r2.top || (r1.top == r2.top && r1.left < r2.left)){
+		if(s1.top < s2.top || (s1.top == s2.top && s1.left < s2.left)){
 			return 1;
 		}else{
 			return -1;
@@ -501,19 +527,14 @@ function ExportSVG() {
 	}
 	
 	
-	// parse out a list of objects
-	function parseObjects(objects){
+	// parse out a list of slices
+	function processSlices(list){
 		
 		var svgStr = "";
 		
-		var i = objects.length;
+		var i = list.length;
 		while(i--){
-			
-			var elem = objects[i];
-			
-			if(elem.toString() =="[object SliceHotspot]"){
-				svgStr += renderSlice(elem);
-			}
+			svgStr += renderSlice(list[i]);
 		}
 		
 		return svgStr;
@@ -521,20 +542,6 @@ function ExportSVG() {
 	}
 
 		
-	// render slice
-	function renderSlice(elem){
-		
-		var svgStr = '';
-		
-		// rectangle slice only
-		if(elem.shape == "rectangle"){
-			svgStr += renderSliceElements(elem);
-		}
-
-		return svgStr;
-	}
-
-
 	// get ordered id
 	function getId(){
 		var s = UNICODE_CODE_START.toString(16);
@@ -543,21 +550,24 @@ function ExportSVG() {
 	}
 
 	// renders all elements within a slice
-	function renderSliceElements( slice ){
-
-		var rect = slice.pixelRect;
+	function renderSlice( slice ){
 
 		_zoom_ratio = GLYPH_SIZE / slice.width;
-		_slice_offset = [rect.left, rect.top];
+		_slice_offset = [slice.left, slice.top];
 		
-		var elems = _dom.elementsAt(rect);
+		var elems = _dom.elementsAt({
+			top: slice.top,
+			left: slice.left,
+			right: slice.right,
+			bottom: slice.bottom
+		});
 
 		if(elems.length < 1) return "";
 		
 		var str = parsePathObjects(elems);
-		var name = slice.baseName || false;
+		var name = slice.name || false;
 		var numId = getId();
-		var id = slice.altText || '&#x'+ numId +';';
+		var id = slice.id || '&#x'+ numId +';';
 		
 		if(str != ""){
 			str = '<glyph unicode="' + id + '" '+
