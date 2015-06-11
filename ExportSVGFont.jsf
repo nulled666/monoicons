@@ -47,7 +47,7 @@ var SKIP_HIDDEN_LAYERS = false;
 var SKIP_HIDDEN_OBJECTS = true;
 
 var GLYPH_SIZE = 1400;  // the default glyph size we need to resize to
-var GLYPH_DESCENT_RATIO = 0.2;
+var GLYPH_DESCENT_RATIO = 0.5;
 var GLYPH_DESCENT = - GLYPH_SIZE * GLYPH_DESCENT_RATIO;
 var GLYPH_ASCENT = GLYPH_SIZE + GLYPH_DESCENT;
 
@@ -187,11 +187,13 @@ function ExportSVG() {
 	font-style: normal;\n\
 	font-weight: normal;\n\
 }\n\n\
-[class^="'+CLASS_PREFIX+'-"]:before,\n\
+[class^="'+CLASS_PREFIX+'-"],\n\
 .'+CLASS_PREFIX+'box {\n\
 	font-family: "' + FILE_NAME + '";\n\
 	font-style: normal;\n\
 	line-height: 1em;\n\
+	display:inline-block;\n\
+	vertical-align: middle;\n\
 }\n\n\
 ' + _css_output;
 		
@@ -307,6 +309,7 @@ function ExportSVG() {
 		i {\
 			font-size: 14px;\
 			color: #333;\
+			-outline:1px dotted invert;\
 		}\
 		tr:hover {\
 			background-color: rgba(0,0,0,0.05);\
