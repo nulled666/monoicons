@@ -8,7 +8,7 @@
 
 
 var SCRIPT_NAME = "SVG Font Exporter"
-var VERSION = "0.2.1";
+var VERSION = "0.2.5";
 
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -394,13 +394,19 @@ function ExportSVG() {
 	</div>\
 	<div class="controls">\
 		<div class="switch">\
+			<a onclick="set_size(true)">+</a>\
+			<a onclick="set_size(false)">-</a>\
+			<input id="font_size" onchange="set_size()" value="14"/>\
+		</div>\
+		<br/>\
+		<div class="switch">\
 			<a onclick="color_change(\'#333\')">B</a>\
 			<a onclick="color_change(\'#FFF\')">W</a>\
 			<a onclick="color_change(\'#d93600\')">R</a>\
 			<a onclick="color_change(\'#85b200\')">G</a>\
 			<a onclick="color_change(\'#006dd9\')">B</a>\
 			<input id="color_input" onchange="color_change()" value="#333"/>\
-			<a onclick="invert()" class="invert"><i class="icon-swap-v"></i></a>\
+			<a onclick="invert()" class="invert"><i class="mi-swap-v"></i></a>\
 		</div>\
 		<br/>\
 		<div class="switch">\
@@ -410,12 +416,6 @@ function ExportSVG() {
 			<a onclick="bg_change(\'#85b200\')">G</a>\
 			<a onclick="bg_change(\'#006dd9\')">B</a>\
 			<input id="bg_input" onchange="bg_change()" value="#fff"/>\
-		</div>\
-		<br/>\
-		<div class="switch">\
-			<a onclick="set_size(true)">+</a>\
-			<a onclick="set_size(false)">-</a>\
-			<input id="font_size" onchange="set_size()" value="14"/>\
 		</div>\
 	</div>\
 </div>\n\
@@ -470,8 +470,33 @@ function ExportSVG() {
 			}
 		}
 		
+		if(slices.length<1){
+			alert("ERROR: No slice for output!");
+			return;
+		}
+		
+		// clone array
+		var list = [];
+		for(var i=0; i<slices.length; i++){
+			list.push(slices[i]);
+		}
+		list.sort(sort_slices);
+		
 		// parse the document
-		_svg_output = parseObjects(slices);
+		_svg_output = parseObjects(list);
+		
+	}
+	
+	// sort slices in layout order
+	function sort_slices(s1, s2){
+		var r1 = s1.pixelRect;
+		var r2 = s2.pixelRect;
+		
+		if(r1.top < r2.top || (r1.top == r2.top && r1.left < r2.left)){
+			return 1;
+		}else{
+			return -1;
+		}
 		
 	}
 	
