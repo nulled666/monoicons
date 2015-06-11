@@ -310,6 +310,8 @@ function ExportSVG() {
 			font-size: 14px;\
 			color: #333;\
 			-outline:1px dotted invert;\
+			--webkit-transition: -webkit-transform 5s;\
+			--webkit-transform: rotate(0deg);\
 		}\
 		tr:hover {\
 			background-color: rgba(0,0,0,0.05);\
@@ -320,6 +322,7 @@ function ExportSVG() {
 		}\
 		td:hover i {\
 			color: #FFF;\
+			--webkit-transform: rotate(720deg);\
 		}\
 	</style>\n\
 	<script>\
