@@ -19,13 +19,15 @@ var FONT_NAME = 'monoicons';
 var CLASS_PREFIX = 'mi';
 var AUTHOR_NAME = 'SiC';
 var AUTHOR_EMAIL = 'nulled666@gmail.com';
+var PROJECT_TITLE = 'Visit Monoicons Project on GitHub';
+var PROJECT_URL = 'https://github.com/nulled666/Monoicons/';
 
 var ASK_SAVE_PATH = false;
 var FILE_NAME = 'monoicons'; // the default file name if not ask for save path
 
 var FONT_VERSION = (function(){
 	var now = new Date();
-	var s = now.getFullYear() + '.' + addZero(now.getMonth()+1, 2) + '.' +  addZero(now.getDay()+1, 2) + '.' +
+	var s = now.getFullYear() + '.' + addZero(now.getMonth()+1, 2) + '.' +  addZero(now.getDate()+1, 2) + '.' +
 		addZero(now.getHours(),2) + addZero(now.getMinutes(),2) + addZero(now.getSeconds(),2);
 	return s;
 })();
@@ -233,13 +235,18 @@ function ExportSVG() {
 			color: #fff;\
 			background: #0066ff;\
 			outline: 4px solid #fff;\
+			user-select: none;\
+			-webkit-user-select: none;\
 		}\
-		.title h1 {\
+		.title h1{\
 			display: inline-block;\
 			vertical-align: middle;\
 			margin: 10px 0;\
 			font-weight: normal;\
 			font-size: 48px;\
+		}\
+		.title h1 a:hover{\
+			background: #4C96FE;\
 		}\
 		.info {\
 			display: inline-block;\
@@ -252,6 +259,12 @@ function ExportSVG() {
 		}\
 		.info a{\
 			color: #fff;\
+		}\
+		.info a:hover{\
+			background: #4C96FE;\
+		}\
+		.title .mi-github{\
+			color: #fff\;\
 		}\
 		.controls {\
 			display: inline-block;\
@@ -275,13 +288,10 @@ function ExportSVG() {
 		.switch a:hover {\
 			background: #fff;\
 		}\
-		.switch .active {\
-			background: #fff;\
-		}\
 		.switch .invert,\
 		.switch .invert:hover{\
 			position: relative;\
-			top: 12px;\
+			top: 0.5em;\
 			background: none;\
 		}\
 		.switch .invert i{\
@@ -310,6 +320,8 @@ function ExportSVG() {
 			font-size: 14px;\
 			color: #333;\
 			-outline:1px dotted invert;\
+			--webkit-transition: -webkit-transform 5s;\
+			--webkit-transform: rotate(0deg);\
 		}\
 		tr:hover {\
 			background-color: rgba(0,0,0,0.05);\
@@ -320,6 +332,7 @@ function ExportSVG() {
 		}\
 		td:hover i {\
 			color: #FFF;\
+			--webkit-transform: rotate(720deg);\
 		}\
 	</style>\n\
 	<script>\
@@ -393,7 +406,9 @@ function ExportSVG() {
 	<h1>'+ FONT_NAME + '</h1>\
 	<div class="info">\
 		' + _item_count + ' icons by\
-		<a href="mailto:' + AUTHOR_EMAIL + '">'+ encodeHTML(AUTHOR_NAME) + '</a><br/>\
+		<a href="mailto:' + AUTHOR_EMAIL + '">'+ encodeHTML(AUTHOR_NAME) + '</a> \
+		<a href="' + PROJECT_URL + '" target="_blank"><i class="mi-github"></i></a>\
+		<br/>\
 		version '+ FONT_VERSION +'\
 	</div>\
 	<div class="controls">\
