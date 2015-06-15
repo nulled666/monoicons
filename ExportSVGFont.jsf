@@ -235,6 +235,8 @@ function ExportSVG() {
 			color: #fff;\
 			background: #0066ff;\
 			outline: 4px solid #fff;\
+			user-select: none;\
+			-webkit-user-select: none;\
 		}\
 		.title h1{\
 			display: inline-block;\
