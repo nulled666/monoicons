@@ -265,6 +265,7 @@ function ExportSVG() {
 		}\
 		.title .mi-github{\
 			color: #fff\;\
+			font-size: 14px;\
 		}\
 		.controls {\
 			display: inline-block;\
@@ -406,7 +407,7 @@ function ExportSVG() {
 	<h1>'+ FONT_NAME + '</h1>\
 	<div class="info">\
 		' + _item_count + ' icons by\
-		<a href="mailto:' + AUTHOR_EMAIL + '">'+ encodeHTML(AUTHOR_NAME) + '</a> \
+		<a href="mailto:' + AUTHOR_EMAIL + '">'+ encodeHTML(AUTHOR_NAME) + '</a> &nbsp;\
 		<a href="' + PROJECT_URL + '" target="_blank"><i class="mi-github"></i></a>\
 		<br/>\
 		version '+ FONT_VERSION +'\
